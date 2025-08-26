@@ -2,6 +2,7 @@ body {
     background-color: #e0e0e0;
     margin: 0;
 }
+
 h1,
 h2,
 h3,
@@ -41,4 +42,34 @@ td {
 
 li {
     list-style: none;
+}
+
+
+// Alert styles
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+
+    &.alert-success {
+        color: #155724;
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+    }
+
+    &.alert-error {
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+
+        ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+    }
 }

@@ -13,7 +13,7 @@
     <h2 class="title">検索画面</h2>
     <hr>
     <div class="search-hotel-name">
-        <form action="{{ route('adminHotelSearchResult') }}" method="post">
+        <form action="{{ route('adminHotelSearchResult') }}" method="get">
             @csrf
             <input type="text" name="hotel_name" value="" placeholder="ホテル名">
             <button type="submit">検索</button>

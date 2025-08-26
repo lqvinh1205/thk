@@ -105,22 +105,14 @@ class Hotel extends Model
     }
 
     /**
-     * Check if hotel name exists for the same prefecture
+     * Delete a hotel by ID
      *
-     * @param string $hotelName
-     * @param int $prefectureId
-     * @param int|null $excludeId
+     * @param int $hotelId
      * @return bool
      */
-    public static function hotelExists(string $hotelName, int $prefectureId, ?int $excludeId = null): bool
+    public static function deleteHotel(int $hotelId): bool
     {
-        $query = self::where('hotel_name', $hotelName)
-            ->where('prefecture_id', $prefectureId);
-
-        if ($excludeId) {
-            $query->where('hotel_id', '!=', $excludeId);
-        }
-
-        return $query->exists();
+        $hotel = Hotel::findOrFail($hotelId);
+        return $hotel->delete();
     }
 }

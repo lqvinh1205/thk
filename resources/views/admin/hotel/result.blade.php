@@ -3,6 +3,25 @@
 <div class="page-wrapper search-page-wrapper">
     <div class="search-result">
         <h3 class="search-result-title">検索結果</h3>
+        
+        <!-- Success Message -->
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+        
+        <!-- Error Messages -->
+        @if($errors->any())
+            <div class="alert alert-error">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        
         @if (!empty($hotelList))
         <table class="shopsearchlist_table">
             <tbody>
@@ -44,10 +63,11 @@
                         </form>
                     </td>
                     <td>
-                        <form action="{{ route('adminHotelDeleteProcess') }}" method="post">
+                        <form action="{{ route('adminHotelDeleteProcess') }}" method="post" class="delete-hotel-form">
                             @csrf
                             <input type="hidden" name="hotel_id" value="{{ $hotel['hotel_id'] }}">
-                            <button type="submit">削除</button>
+                            <input type="hidden" name="search_term" value="{{ $current_search ?? '' }}">
+                            <button type="submit" class="btn-delete">削除</button>
                         </form>
                     </td>
                 </tr>
@@ -59,4 +79,19 @@
         @endif
     </div>
 </div>
+@endsection
+
+<!-- Page specific JavaScript -->
+@section('page_js')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.delete-hotel-form').forEach(function(form) {
+            form.addEventListener('submit', function(e) {
+                if (!confirm('本当にこのホテルを削除しますか？\n\nこの操作は元に戻せません。')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    });
+</script>
 @endsection

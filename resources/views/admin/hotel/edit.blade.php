@@ -106,10 +106,35 @@
 
 			<!-- Submit Buttons -->
 			<div class="form-actions">
-				<button type="submit" class="btn btn-primary">更新</button>
+				<button type="button" id="confirm-update-btn" class="btn btn-primary">更新</button>
 				<a href="{{ route('adminHotelSearchPage') }}" class="btn btn-secondary">キャンセル</a>
 			</div>
 		</form>
+	</div>
+
+	<!-- Confirmation Modal -->
+	<div id="confirmation-modal" class="modal-overlay" style="display: none;">
+		<div class="modal-content">
+			<h3>更新内容確認</h3>
+			<div class="confirmation-details">
+				<div class="detail-row">
+					<label>ホテル名:</label>
+					<span id="confirm-hotel-name"></span>
+				</div>
+				<div class="detail-row">
+					<label>都道府県:</label>
+					<span id="confirm-prefecture"></span>
+				</div>
+				<div class="detail-row">
+					<label>画像:</label>
+					<span id="confirm-image"></span>
+				</div>
+			</div>
+			<div class="modal-actions">
+				<button type="button" id="confirm-submit-btn" class="btn btn-primary">確定</button>
+				<button type="button" id="cancel-confirm-btn" class="btn btn-secondary">キャンセル</button>
+			</div>
+		</div>
 	</div>
 	<hr>
 </div>
@@ -123,6 +148,11 @@
 		const fileInput = document.getElementById('hotel_image');
 		const removeImageCheckbox = document.querySelector('input[name="remove_image"]');
 		const currentImageDiv = document.querySelector('.current-image');
+		const form = document.querySelector('form');
+		const confirmUpdateBtn = document.getElementById('confirm-update-btn');
+		const modal = document.getElementById('confirmation-modal');
+		const confirmSubmitBtn = document.getElementById('confirm-submit-btn');
+		const cancelConfirmBtn = document.getElementById('cancel-confirm-btn');
 
 		if (fileInput) {
 			fileInput.addEventListener('change', function(e) {
@@ -160,26 +190,69 @@
 			});
 		}
 
-		// Form validation
-		const form = document.querySelector('form');
-		if (form) {
-			form.addEventListener('submit', function(e) {
+		// Confirmation modal functionality
+		if (confirmUpdateBtn) {
+			confirmUpdateBtn.addEventListener('click', function(e) {
+				e.preventDefault();
+
+				// Validate form first
 				const hotelName = document.getElementById('hotel_name').value.trim();
 				const prefectureId = document.getElementById('prefecture_id').value;
 
 				if (!hotelName) {
 					alert('ホテル名を入力してください。');
-					e.preventDefault();
 					return;
 				}
 
 				if (!prefectureId) {
 					alert('都道府県を選択してください。');
-					e.preventDefault();
 					return;
 				}
+
+				// Get form data for confirmation
+				const prefectureSelect = document.getElementById('prefecture_id');
+				const prefectureName = prefectureSelect.options[prefectureSelect.selectedIndex].text;
+				const imageFile = fileInput.files[0];
+
+				// Fill confirmation modal
+				document.getElementById('confirm-hotel-name').textContent = hotelName;
+				document.getElementById('confirm-prefecture').textContent = prefectureName;
+
+				// Handle image confirmation text
+				let imageText = '変更なし';
+				if (imageFile) {
+					imageText = '新しい画像: ' + imageFile.name;
+				} else if (removeImageCheckbox && removeImageCheckbox.checked) {
+					imageText = '画像を削除';
+				}
+				document.getElementById('confirm-image').textContent = imageText;
+
+				// Show modal
+				modal.style.display = 'flex';
 			});
 		}
+
+		// Confirm submit button
+		if (confirmSubmitBtn) {
+			confirmSubmitBtn.addEventListener('click', function() {
+				modal.style.display = 'none';
+				form.submit();
+			});
+		}
+
+		// Cancel confirmation button
+		if (cancelConfirmBtn) {
+			cancelConfirmBtn.addEventListener('click', function() {
+				modal.style.display = 'none';
+			});
+		}
+
+		// Close modal when clicking outside
+		modal.addEventListener('click', function(e) {
+			if (e.target === modal) {
+				modal.style.display = 'none';
+			}
+		});
 	});
 </script>
 @endsection

@@ -53,10 +53,8 @@
 						</div>
 					</div>
 				</div>
-				<div class="form-row">
-					<div class="search-button-group">
-						<button type="submit" class="btn btn-primary">検索</button>
-					</div>
+				<div class="search-button-group">
+					<button type="submit" class="btn btn-primary">検索</button>
 				</div>
 				@error('searchError')
 				<div class="form-row">

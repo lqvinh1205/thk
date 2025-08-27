@@ -15,8 +15,13 @@
     <div class="search-hotel-name">
         <form action="{{ route('adminHotelSearchResult') }}" method="get">
             @csrf
-            <input type="text" name="hotel_name" value="" placeholder="ホテル名">
-            <button type="submit">検索</button>
+            <div class="search-input-group">
+                <input type="text" name="hotel_name" value="{{ old('hotel_name', '') }}" placeholder="ホテル名">
+                <button type="submit">検索</button>
+            </div>
+            @if(!empty($searchError))
+            <span class="error-message">{{ $searchError }}</span>
+            @endif
         </form>
     </div>
     <hr>

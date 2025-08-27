@@ -54,6 +54,12 @@ class HotelController extends Controller
     {
         $var = [];
         $hotelNameToSearch = $request->input('hotel_name');
+
+        if (empty(trim($hotelNameToSearch))) {
+            $var['hotelList'] = [];
+            $var['searchError'] = '何も入力されていません';
+            return view('admin.hotel.search', $var);
+        }
         $hotelList = Hotel::getHotelListByName($hotelNameToSearch);
 
         $var['hotelList'] = $hotelList;

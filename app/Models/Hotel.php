@@ -127,6 +127,8 @@ class Hotel extends Model
     public static function deleteHotel(int $hotelId): bool
     {
         $hotel = Hotel::findOrFail($hotelId);
+        // delete bookings associated with the hotel
+        $hotel->bookings()->delete();
         return $hotel->delete();
     }
 }

@@ -20,7 +20,8 @@ class HotelController extends Controller
 
     public function showSearch(): View
     {
-        return view('admin.hotel.search');
+        $prefectures = Prefecture::getAllPrefectures();
+        return view('admin.hotel.search', compact('prefectures'));
     }
 
     public function showResult(): View
@@ -50,21 +51,25 @@ class HotelController extends Controller
 
     /** post methods */
 
-    public function searchResult(Request $request): View
+    public function searchResult(Request $request): View|RedirectResponse
     {
         $var = [];
-        $hotelNameToSearch = $request->input('hotel_name');
+        $hotelName = $request->input('hotel_name');
+        $prefectureId = $request->input('prefecture_id');
 
-        if (empty(trim($hotelNameToSearch))) {
-            $var['hotelList'] = [];
-            $var['searchError'] = '何も入力されていません';
-            return view('admin.hotel.search', $var);
+        // Check if search name empty
+        if (empty(trim($hotelName))) {
+            return redirect()->route('adminHotelSearchPage')
+                ->withErrors(['searchError' => '何も入力されていません。']);
         }
-        $hotelList = Hotel::getHotelListByName($hotelNameToSearch);
 
-        $var['hotelList'] = $hotelList;
-
-        return view('admin.hotel.result', $var);
+        // Search hotels by name and/or prefecture
+        $hotelList = Hotel::getHotelListByConditions([
+            'hotel_name' => $hotelName,
+            'prefecture_id' => $prefectureId,
+        ]);
+        $prefectures = Prefecture::getAllPrefectures();
+        return view('admin.hotel.result', compact('hotelList', 'prefectures'));
     }
 
     public function edit(EditHotelRequest $request): RedirectResponse
@@ -166,7 +171,7 @@ class HotelController extends Controller
             Hotel::deleteHotel($hotelId);
 
             // fresh data
-            $hotelList = Hotel::getHotelListByName('');
+            $hotelList = Hotel::getHotelListByConditions();
 
             return redirect()
                 ->route('adminHotelSearchResult')

@@ -3,25 +3,24 @@
 <div class="page-wrapper search-page-wrapper">
     <div class="search-result">
         <h3 class="search-result-title">検索結果</h3>
-        
         <!-- Success Message -->
         @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
         @endif
-        
+
         <!-- Error Messages -->
         @if($errors->any())
-            <div class="alert alert-error">
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
+        <div class="alert alert-error">
+            <ul>
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
         @endif
-        
+
         @if (!empty($hotelList))
         <table class="shopsearchlist_table">
             <tbody>

@@ -13,15 +13,38 @@
     <h2 class="title">検索画面</h2>
     <hr>
     <div class="search-hotel-name">
-        <form action="{{ route('adminHotelSearchResult') }}" method="get">
+        <form action="{{ route('adminHotelSearchResult') }}" method="post">
             @csrf
-            <div class="search-input-group">
-                <input type="text" name="hotel_name" value="{{ old('hotel_name', '') }}" placeholder="ホテル名">
-                <button type="submit">検索</button>
+            <div class="search-form-group">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="hotel_name">ホテル名</label>
+                        <div>
+                            <input type="text" id="hotel_name" name="hotel_name" value="{{ old('hotel_name', request('hotel_name', '')) }}" placeholder="ホテル名を入力してください" class="form-control">
+                            @error('searchError')
+                            <span class="error-message">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="prefecture_id">都道府県</label>
+                        <select id="prefecture_id" name="prefecture_id" class="form-control">
+                            <option value="">都道府県を選択してください</option>
+                            @if(isset($prefectures))
+                            @foreach($prefectures as $prefecture)
+                            <option value="{{ $prefecture['prefecture_id'] }}"
+                                {{ old('prefecture_id', request('prefecture_id')) == $prefecture['prefecture_id'] ? 'selected' : '' }}>
+                                {{ $prefecture['prefecture_name'] }}
+                            </option>
+                            @endforeach
+                            @endif
+                        </select>
+                    </div>
+                    <div class="search-button-group">
+                        <button type="submit" class="btn btn-primary">検索</button>
+                    </div>
+                </div>
             </div>
-            @if(!empty($searchError))
-            <span class="error-message">{{ $searchError }}</span>
-            @endif
         </form>
     </div>
     <hr>

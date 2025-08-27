@@ -37,14 +37,19 @@ class Hotel extends Model
     /**
      * Search hotel by hotel name
      *
-     * @param string $hotelName
+     * @param array $params
      * @return array
      */
-    static public function getHotelListByName(?string $hotelName): array
+    static public function getHotelListByConditions(array $params = []): array
     {
         $result = Hotel::with('prefecture')
-            ->when($hotelName !== '', function ($query) use ($hotelName) {
-                $query->where('hotel_name', 'like', '%' . $hotelName . '%');
+            ->when(!empty($params['hotel_name']), function ($query) use ($params) {
+                $query->where('hotel_name', 'like', '%' . $params['hotel_name'] . '%');
+            })
+            ->when(!empty($params['prefecture_id']), function ($query) use ($params) {
+                $query->whereHas('prefecture', function ($q) use ($params) {
+                    $q->where('prefecture_id', $params['prefecture_id']);
+                });
             })
             ->get()
             ->toArray();

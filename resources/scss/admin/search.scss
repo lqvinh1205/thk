@@ -1,4 +1,4 @@
-.search-hotel-name {
+.search-booking {
 	.search-form-group {
 		.form-row {
 			display: flex;
@@ -6,6 +6,7 @@
 			align-items: center;
 
 			.form-group {
+				flex: 1;
 				display: flex;
 				gap: 10px;
 				align-items: center;

@@ -11,7 +11,6 @@ use App\Models\Prefecture;
 use App\Http\Requests\CreateHotelRequest;
 use App\Http\Requests\EditHotelRequest;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class HotelController extends Controller
@@ -82,17 +81,24 @@ class HotelController extends Controller
                 // Get the current hotel
                 $hotel = Hotel::findOrFail($hotelId);
                 $currentFilePath = $hotel->file_path;
-                $newFilePath = $currentFilePath;
+                $newFilePath = $currentFilePath; // Keep current path if no new file uploaded
 
                 // Handle new file upload
                 if ($request->hasFile('hotel_image')) {
                     $file = $request->file('hotel_image');
                     $fileName = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
-                    $newFilePath = $file->storeAs('hotels', $fileName, 'public');
 
-                    // Delete old file if exists and not already deleted
-                    if ($currentFilePath && $currentFilePath !== $newFilePath && Storage::disk('public')->exists($currentFilePath)) {
-                        Storage::disk('public')->delete($currentFilePath);
+                    // Store file in public/assets/img/hotel
+                    $destinationPath = public_path('assets/img/hotel');
+                    $file->move($destinationPath, $fileName);
+                    $newFilePath = 'hotel/' . $fileName;
+
+                    // Delete old file if exists
+                    if ($currentFilePath && $currentFilePath !== $newFilePath) {
+                        $oldFilePath = public_path('assets/img/' . $currentFilePath);
+                        if (file_exists($oldFilePath)) {
+                            unlink($oldFilePath);
+                        }
                     }
                 }
 
@@ -128,7 +134,11 @@ class HotelController extends Controller
                 if ($request->hasFile('hotel_image')) {
                     $file = $request->file('hotel_image');
                     $fileName = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
-                    $filePath = $file->storeAs('hotels', $fileName, 'public');
+
+                    // Store file in public/assets/img/hotel
+                    $destinationPath = public_path('assets/img/hotel');
+                    $file->move($destinationPath, $fileName);
+                    $filePath = 'hotel/' . $fileName;
                 }
 
                 // Create hotel
@@ -164,9 +174,12 @@ class HotelController extends Controller
             if (!$hotel) {
                 return redirect()->back()->withErrors(['error' => 'ホテルが見つかりません。']);
             }
-            // Xóa file ảnh nếu có
-            if ($hotel->file_path && Storage::disk('public')->exists($hotel->file_path)) {
-                Storage::disk('public')->delete($hotel->file_path);
+            // remove image file
+            if ($hotel->file_path) {
+                $filePath = public_path($hotel->file_path);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
             }
             Hotel::deleteHotel($hotelId);
 

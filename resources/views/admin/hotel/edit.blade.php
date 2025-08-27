@@ -78,7 +78,7 @@
 			<div class="form-group">
 				<label>現在の画像</label>
 				<div class="current-image">
-					<img src="{{ asset('storage/' . $hotel->file_path) }}" alt="{{ $hotel->hotel_name }}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">
+					<img src="{{ '/assets/img/' . $hotel->file_path }}" alt="{{ $hotel->hotel_name }}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">
 				</div>
 			</div>
 			@endif

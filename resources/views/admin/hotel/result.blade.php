@@ -4,9 +4,9 @@
     <div class="search-result">
         <h3 class="search-result-title">検索結果</h3>
         <!-- Success Message -->
-        @if(session('success'))
+        @if(session('success') || isset($success))
         <div class="alert alert-success">
-            {{ session('success') }}
+            {{ session('success') ?? $success }}
         </div>
         @endif
 

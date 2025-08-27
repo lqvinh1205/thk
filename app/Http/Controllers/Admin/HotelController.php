@@ -152,7 +152,7 @@ class HotelController extends Controller
         });
     }
 
-    public function delete(Request $request): View
+    public function delete(Request $request): View|RedirectResponse
     {
         return DB::transaction(function () use ($request) {
 
@@ -173,7 +173,9 @@ class HotelController extends Controller
             // fresh data
             $hotelList = Hotel::getHotelListByConditions();
             $prefectures = Prefecture::getAllPrefectures();
-            return view('admin.hotel.result', compact('hotelList', 'prefectures'))->with('success', 'ホテル「' . $hotel->hotel_name . '」を削除しました。');
+
+            return view('admin.hotel.result', compact('hotelList', 'prefectures'))
+                ->with('success', 'ホテル「' . $hotel->hotel_name . '」を削除しました。');
         });
     }
 }
